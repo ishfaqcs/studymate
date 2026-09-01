@@ -1,0 +1,17 @@
+.dart_tool/
+.packages
+.pub/
+build/
+.idea/
+.vscode/
+*.iml
+.flutter-plugins
+.flutter-plugins-dependencies
+android/key.properties
+android/local.properties
+local.properties
+*.pem
+*.p12
+*.jks
+*.keystore
+*.pfx
