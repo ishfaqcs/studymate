@@ -16,27 +16,36 @@ class AppDatabase {
   Future<void> resetUserData() async {
     final db = await database;
     await db.transaction((txn) async {
-      for (final table in [
-        'documents',
-        'notes',
-        'grades',
-        'tasks',
-        'attendance',
-        'schedules',
-        'courses',
-        'grading_boundaries',
-        'semesters',
-        'profile'
-      ]) {
-        await txn.delete(table);
-      }
-      final now = DateTime.now().toIso8601String();
-      await txn.insert('semesters',
-          {'id': 1, 'name': 'Current semester', 'created_at': now});
-      await insertDefaultScale(txn, now);
+      await resetTables(txn);
     });
     final documents = Directory(join(dirname(await databasePath), 'documents'));
     if (await documents.exists()) await documents.delete(recursive: true);
+  }
+
+  static Future<void> resetTables(DatabaseExecutor db) async {
+    for (final table in [
+      'study_plan_blocks',
+      'study_plans',
+      'exam_topics',
+      'exam_preparations',
+      'study_sessions',
+      'documents',
+      'notes',
+      'grades',
+      'tasks',
+      'attendance',
+      'schedules',
+      'courses',
+      'grading_boundaries',
+      'semesters',
+      'profile'
+    ]) {
+      await db.delete(table);
+    }
+    final now = DateTime.now().toIso8601String();
+    await db.insert(
+        'semesters', {'id': 1, 'name': 'Current semester', 'created_at': now});
+    await insertDefaultScale(db, now);
   }
 
   Future<Database> _open() async {
@@ -74,6 +83,7 @@ class AppDatabase {
           await db.execute(
               'CREATE INDEX documents_search ON documents(display_name, file_type)');
           await createPerformanceIndexes(db);
+          await createV2Tables(db);
           final now = DateTime.now().toIso8601String();
           await db.insert('semesters', {
             'id': 1,
@@ -183,6 +193,9 @@ class AppDatabase {
           if (oldVersion < 6) {
             await createPerformanceIndexes(db);
           }
+          if (oldVersion < 7) {
+            await createV2Tables(db);
+          }
         });
   }
 
@@ -220,6 +233,25 @@ class AppDatabase {
       'CREATE INDEX IF NOT EXISTS notes_flags_updated ON notes(pinned, favorite, updated_at)',
       'CREATE INDEX IF NOT EXISTS documents_course_updated ON documents(course_id, updated_at)',
       'CREATE INDEX IF NOT EXISTS tasks_course_due ON tasks(course_id, due_date)',
+    ]) {
+      await db.execute(statement);
+    }
+  }
+
+  /// Schema additions for V2 Phase 1. Existing tables and identifiers are not
+  /// rewritten, so an upgrade from version 6 is strictly additive.
+  static Future<void> createV2Tables(DatabaseExecutor db) async {
+    for (final statement in [
+      '''CREATE TABLE IF NOT EXISTS study_sessions(id TEXT PRIMARY KEY, semester_id INTEGER, course_id TEXT, task_id TEXT, title TEXT, session_type TEXT NOT NULL, planned_duration_minutes INTEGER NOT NULL, actual_duration_minutes INTEGER NOT NULL DEFAULT 0, started_at TEXT NOT NULL, completed_at TEXT, status TEXT NOT NULL, created_at TEXT NOT NULL, updated_at TEXT NOT NULL, FOREIGN KEY(semester_id) REFERENCES semesters(id) ON DELETE SET NULL, FOREIGN KEY(course_id) REFERENCES courses(id) ON DELETE SET NULL, FOREIGN KEY(task_id) REFERENCES tasks(id) ON DELETE SET NULL)''',
+      '''CREATE TABLE IF NOT EXISTS exam_preparations(id TEXT PRIMARY KEY, course_id TEXT NOT NULL, task_id TEXT, exam_title TEXT NOT NULL, exam_date TEXT NOT NULL, target_grade REAL, confidence_level INTEGER, created_at TEXT NOT NULL, updated_at TEXT NOT NULL, FOREIGN KEY(course_id) REFERENCES courses(id) ON DELETE CASCADE, FOREIGN KEY(task_id) REFERENCES tasks(id) ON DELETE SET NULL)''',
+      '''CREATE TABLE IF NOT EXISTS exam_topics(id TEXT PRIMARY KEY, exam_preparation_id TEXT NOT NULL, title TEXT NOT NULL, status TEXT NOT NULL, priority TEXT NOT NULL, estimated_minutes INTEGER, notes TEXT, position INTEGER NOT NULL DEFAULT 0, created_at TEXT NOT NULL, updated_at TEXT NOT NULL, FOREIGN KEY(exam_preparation_id) REFERENCES exam_preparations(id) ON DELETE CASCADE)''',
+      '''CREATE TABLE IF NOT EXISTS study_plans(id TEXT PRIMARY KEY, semester_id INTEGER NOT NULL, title TEXT NOT NULL, start_date TEXT NOT NULL, end_date TEXT NOT NULL, status TEXT NOT NULL, created_at TEXT NOT NULL, updated_at TEXT NOT NULL, FOREIGN KEY(semester_id) REFERENCES semesters(id) ON DELETE CASCADE)''',
+      '''CREATE TABLE IF NOT EXISTS study_plan_blocks(id TEXT PRIMARY KEY, study_plan_id TEXT NOT NULL, course_id TEXT, task_id TEXT, exam_preparation_id TEXT, title TEXT NOT NULL, date TEXT NOT NULL, start_time TEXT, planned_minutes INTEGER NOT NULL, priority TEXT NOT NULL, status TEXT NOT NULL, created_at TEXT NOT NULL, updated_at TEXT NOT NULL, FOREIGN KEY(study_plan_id) REFERENCES study_plans(id) ON DELETE CASCADE, FOREIGN KEY(course_id) REFERENCES courses(id) ON DELETE SET NULL, FOREIGN KEY(task_id) REFERENCES tasks(id) ON DELETE SET NULL, FOREIGN KEY(exam_preparation_id) REFERENCES exam_preparations(id) ON DELETE SET NULL)''',
+      'CREATE INDEX IF NOT EXISTS study_sessions_started ON study_sessions(started_at)',
+      'CREATE INDEX IF NOT EXISTS study_sessions_course ON study_sessions(course_id, started_at)',
+      'CREATE INDEX IF NOT EXISTS exam_topics_preparation ON exam_topics(exam_preparation_id, position)',
+      'CREATE INDEX IF NOT EXISTS study_plan_blocks_date ON study_plan_blocks(date)',
+      'CREATE INDEX IF NOT EXISTS study_plan_blocks_course ON study_plan_blocks(course_id, date)',
     ]) {
       await db.execute(statement);
     }

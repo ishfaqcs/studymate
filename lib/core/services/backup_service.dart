@@ -6,15 +6,17 @@ import 'package:path/path.dart' as p;
 import '../database/app_database.dart';
 
 class BackupInfo {
-  const BackupInfo(this.createdAt, this.counts, this.data, this.files);
+  const BackupInfo(this.createdAt, this.counts, this.data, this.files,
+      {this.formatVersion = 1});
   final DateTime createdAt;
   final Map<String, int> counts;
   final Map<String, List<Map<String, Object?>>> data;
   final Map<String, Uint8List> files;
+  final int formatVersion;
 }
 
 class BackupService {
-  static const formatVersion = 1,
+  static const formatVersion = 2,
       maxInput = 100 * 1024 * 1024,
       maxExpanded = 500 * 1024 * 1024;
   static const tables = [
@@ -27,7 +29,12 @@ class BackupService {
     'grades',
     'grading_boundaries',
     'notes',
-    'documents'
+    'documents',
+    'study_sessions',
+    'exam_preparations',
+    'exam_topics',
+    'study_plans',
+    'study_plan_blocks'
   ];
   Future<Uint8List> create() async {
     final db = await AppDatabase.instance.database;
@@ -41,6 +48,7 @@ class BackupService {
     final manifest = utf8.encode(jsonEncode({
       'backupFormatVersion': formatVersion,
       'appVersion': '1.0.0',
+      'databaseVersion': 7,
       'createdAt': now.toIso8601String(),
       'counts': {for (final e in data.entries) e.key: e.value.length}
     }));
@@ -89,7 +97,8 @@ class BackupService {
     }
     final manifest = jsonDecode(utf8.decode(files['manifest.json']!))
         as Map<String, dynamic>;
-    if (manifest['backupFormatVersion'] != formatVersion) {
+    final backupVersion = manifest['backupFormatVersion'];
+    if (backupVersion != 1 && backupVersion != formatVersion) {
       throw const FormatException('Unsupported backup version.');
     }
     final raw = jsonDecode(utf8.decode(files['database.json']!))
@@ -97,6 +106,10 @@ class BackupService {
     final data = <String, List<Map<String, Object?>>>{};
     for (final t in tables) {
       final rows = raw[t];
+      if (rows == null && backupVersion == 1 && _v2Tables.contains(t)) {
+        data[t] = [];
+        continue;
+      }
       if (rows is! List) throw FormatException('Missing $t data.');
       data[t] = rows.map((e) => Map<String, Object?>.from(e as Map)).toList();
     }
@@ -117,7 +130,8 @@ class BackupService {
       }
     }
     return BackupInfo(DateTime.parse(manifest['createdAt'] as String),
-        {for (final e in data.entries) e.key: e.value.length}, data, files);
+        {for (final e in data.entries) e.key: e.value.length}, data, files,
+        formatVersion: backupVersion as int);
   }
 
   Future<void> restore(BackupInfo info) async {
@@ -168,4 +182,12 @@ class BackupService {
       // A stale rollback directory is safer than a database/file mismatch.
     }
   }
+
+  static const _v2Tables = {
+    'study_sessions',
+    'exam_preparations',
+    'exam_topics',
+    'study_plans',
+    'study_plan_blocks'
+  };
 }

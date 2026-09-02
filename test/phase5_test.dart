@@ -10,8 +10,8 @@ import 'package:studentplanner/features/notes/note.dart';
 import 'package:studentplanner/core/constants/app_constants.dart';
 
 void main() {
-  test('database schema advances additively to version 6', () {
-    expect(AppConstants.dbVersion, 6);
+  test('database schema advances additively to version 7', () {
+    expect(AppConstants.dbVersion, 7);
   });
   test('note persists course, pin, favorite and trimmed content', () {
     final note = StudyNote(
@@ -72,6 +72,12 @@ void main() {
       final info = BackupService().inspect(_backup());
       expect(info.counts['courses'], 1);
       expect(info.createdAt, DateTime.utc(2026, 8, 20));
+      expect(info.formatVersion, 1);
+      expect(info.counts['study_sessions'], 0);
+    });
+    test('accepts V2 backups', () {
+      final info = BackupService().inspect(_backup(version: 2));
+      expect(info.formatVersion, 2);
     });
     test('rejects missing manifest', () {
       expect(() => BackupService().inspect(_backup(manifest: false)),
@@ -100,6 +106,17 @@ Uint8List _backup(
   final data = {
     for (final t in BackupService.tables) t: <Map<String, Object?>>[]
   };
+  if (version == 1) {
+    for (final table in const [
+      'study_sessions',
+      'exam_preparations',
+      'exam_topics',
+      'study_plans',
+      'study_plan_blocks'
+    ]) {
+      data.remove(table);
+    }
+  }
   data['courses']!.add({'id': 'c1'});
   if (invalidRelationship) {
     data['grades']!.add({'id': 'g', 'course_id': 'missing'});

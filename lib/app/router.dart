@@ -36,6 +36,8 @@ import '../features/attendance/attendance_screen.dart';
 import '../features/attendance/attendance_course_screen.dart';
 import '../features/attendance/attendance_form_screen.dart';
 import '../features/attendance/attendance_record.dart';
+import '../features/v2_foundation/v2_placeholder_screen.dart';
+import 'package:flutter/foundation.dart';
 
 final appRouter = GoRouter(
   initialLocation: '/',
@@ -167,6 +169,20 @@ final appRouter = GoRouter(
     GoRoute(path: '/about', builder: (_, __) => const AboutScreen()),
     GoRoute(path: '/profile', builder: (_, __) => const ProfileScreen()),
     GoRoute(path: '/settings', builder: (_, __) => const SettingsScreen()),
+    for (final route in const {
+      '/study-planner': 'Study Planner',
+      '/study-session': 'Study Session',
+      '/exam-prep': 'Exam Preparation',
+      '/analytics': 'Analytics',
+      '/grade-predictor': 'Grade Predictor',
+      '/cloud-sync': 'Cloud Sync',
+      '/ai-assistant': 'AI Assistant',
+    }.entries)
+      GoRoute(
+        path: route.key,
+        redirect: (_, __) => kReleaseMode ? '/more' : null,
+        builder: (_, __) => V2PlaceholderScreen(route.value),
+      ),
   ],
 );
 
