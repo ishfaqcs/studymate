@@ -1,31 +1,12 @@
-# StudyMate Privacy Policy — publication draft
+# StudyMate V1 Privacy Policy publication record
 
-This draft describes StudyMate 1.0. Replace `DEVELOPER_SUPPORT_EMAIL_TODO`, add an effective date, obtain appropriate review, and publish it before release.
+The complete audited policy is maintained in [`privacy-policy/PRIVACY_POLICY.md`](../privacy-policy/PRIVACY_POLICY.md) and published by the dedicated GitHub Pages workflow.
 
-## Information StudyMate stores
+- Effective date: September 6, 2026
+- Intended public URL: https://ishfaqcs.github.io/studymate/privacy-policy/
+- Application: StudyMate 1.0.0+1
+- Package: `com.studymate.studentplanner`
 
-StudyMate stores the profile details a student enters, semesters, courses, schedules, attendance, tasks, grades, notes, grading preferences, reminder configuration, and imported-document metadata. Imported documents are copied into app-private storage.
+## Publication blocker
 
-## Use and local storage
-
-The information is used to provide planning, attendance, GPA, search, report, and reminder features. V1 has no account, advertising, analytics, AI, or cloud synchronization. Core academic data is processed locally.
-
-## Documents, notifications, and backups
-
-The Android system picker grants access to user-selected files. Notification permission is used for reminders. User-created backup and PDF files leave private app storage only when the user selects a save or share destination; those copies are then controlled by the selected destination/application.
-
-## Sharing and third parties
-
-StudyMate does not intentionally transmit academic data to the developer. Android and installed destination applications may process picker, share, notification, or external-open actions according to their own policies.
-
-## Data deletion
-
-Users can delete individual records or use Data & Backup → Delete all StudyMate data. Uninstalling also removes app-private data, subject to Android backup/device behavior. Exported backup files must be deleted separately by the user.
-
-## Students and children
-
-StudyMate is an academic organization tool. The publisher must determine the intended age audience and complete the relevant store declarations before publication.
-
-## Changes and contact
-
-Material behavior changes should be reflected here before release. Contact: `DEVELOPER_SUPPORT_EMAIL_TODO`.
+`DEVELOPER_SUPPORT_EMAIL_TODO` remains because no valid publisher support email exists in the repository. Replace it in both policy files before submitting the URL to Google Play. Do not mark the policy Play-ready until the public page is deployed, reachable, and contains a valid contact email.

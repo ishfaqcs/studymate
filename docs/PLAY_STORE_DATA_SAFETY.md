@@ -30,3 +30,9 @@ This document records observed StudyMate V1 behavior; it is not a submitted Play
 The app supports record deletion and a two-stage full local-data reset. Exported backups are ZIP files containing structured data and managed documents. External copies are not removed by an in-app reset.
 
 Publisher must verify the final merged release manifest and completed Play Console questionnaire before submission.
+
+## Privacy Policy
+
+Intended public URL: https://ishfaqcs.github.io/studymate/privacy-policy/
+
+Publication is not Play-ready while `DEVELOPER_SUPPORT_EMAIL_TODO` remains in the policy.

@@ -3,7 +3,9 @@
 - App name: StudyMate
 - Category: Education
 - Support contact: `DEVELOPER_SUPPORT_EMAIL_TODO`
-- Privacy policy: `PRIVACY_POLICY_URL_TODO`
+- Privacy Policy: https://ishfaqcs.github.io/studymate/privacy-policy/
+
+> Submission blocker: replace `DEVELOPER_SUPPORT_EMAIL_TODO` in the policy with the publisher's valid support email and verify the deployed page first.
 
 ## Short description
 
