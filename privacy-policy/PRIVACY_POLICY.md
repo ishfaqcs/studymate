@@ -97,9 +97,7 @@ This policy may be updated when StudyMate's behavior changes or clarification is
 
 Questions about this policy or StudyMate's privacy practices may be sent to:
 
-**DEVELOPER_SUPPORT_EMAIL_TODO**
-
-This placeholder must be replaced with the publisher's valid support email before this policy is submitted to Google Play.
+**ishfaqcs@uoswabi.edu.pk**
 
 ---
 

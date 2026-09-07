@@ -3,8 +3,8 @@
 - [ ] Create or open the StudyMate app entry and confirm package `com.studymate.studentplanner`.
 - [ ] Select the Education category.
 - [ ] Complete the store listing using only implemented V1 functionality.
-- [ ] Supply `DEVELOPER_SUPPORT_EMAIL_TODO` from the publisher.
-- [ ] Publish the privacy policy and replace `PRIVACY_POLICY_URL_TODO` with its public HTTPS URL.
+- [x] Publisher support email supplied: `ishfaqcs@uoswabi.edu.pk`
+- [ ] Successfully deploy and verify the public Privacy Policy URL: https://ishfaqcs.github.io/studymate/privacy-policy/
 - [ ] Complete Data Safety from the verified release behavior and manifest.
 - [ ] Declare that StudyMate contains no ads.
 - [ ] Complete App access; StudyMate has no account or sign-in gate.
