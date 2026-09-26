@@ -33,8 +33,8 @@ Publisher must verify the final merged release manifest and completed Play Conso
 
 ## Privacy Policy
 
-Intended public URL: https://ishfaqcs.github.io/studymate/privacy-policy/
+Verified public URL: https://ishfaqcs.github.io/studymate/privacy-policy/
 
 Publisher support email: `ishfaqcs@uoswabi.edu.pk`
 
-The remaining publication requirement is successful deployment and verification of the public privacy-policy URL.
+Public deployment was verified successfully on September 26, 2026.

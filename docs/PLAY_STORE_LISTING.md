@@ -5,7 +5,7 @@
 - Support contact: `ishfaqcs@uoswabi.edu.pk`
 - Privacy Policy: https://ishfaqcs.github.io/studymate/privacy-policy/
 
-> Privacy Policy URL must be publicly deployed and verified before Google Play submission.
+> Privacy Policy URL publicly verified on September 26, 2026.
 
 ## Short description
 

@@ -4,7 +4,7 @@
 - [ ] Select the Education category.
 - [ ] Complete the store listing using only implemented V1 functionality.
 - [x] Publisher support email supplied: `ishfaqcs@uoswabi.edu.pk`
-- [ ] Successfully deploy and verify the public Privacy Policy URL: https://ishfaqcs.github.io/studymate/privacy-policy/
+- [x] Privacy Policy publicly deployed and verified: https://ishfaqcs.github.io/studymate/privacy-policy/
 - [ ] Complete Data Safety from the verified release behavior and manifest.
 - [ ] Declare that StudyMate contains no ads.
 - [ ] Complete App access; StudyMate has no account or sign-in gate.
